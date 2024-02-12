@@ -33,7 +33,7 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     db_user = getenv('PERSONAL_DATA_DB_USERNAME', 'root')
     db_host = getenv('PERSONAL_DATA_DB_HOST', 'localhost')
     db_password = getenv('PERSONAL_DATA_DB_PASSWORD', '')
-    db_name = getenv('PERSONAL_DATA_DB_NAME')
+    db_name = getenv('PERSONAL_DATA_DB_NAME', '')
 
     connection = mysql.connector.connect(user=db_user,
                                          host=db_host,
