@@ -50,7 +50,7 @@ def main() -> None:
     a filtered format"""
     fields = "name,email,phone,ssn,password,ip,last_login,user_agent"
     columns = fields.split(',')
-    query = f"SELECT {columns} FROM users"
+    query = f"SELECT {fields} FROM users"
     db = get_db()
     logger = get_logger()
     with db.cursor() as cursor:
@@ -58,7 +58,7 @@ def main() -> None:
         result = cursor.fetchall()
         for user in result:
             record = map(lambda x: f'{x[0]}={x[1]}', zip(columns, user))
-            message = f'{'; '.join(list(record))};'
+            message = f'{"; ".join(list(record))};'
             args = ("user_data", logging.INFO, None, None, message, None, None)
             log_record = logging.LogRecord(*args)
             logger.handle(log_record)
