@@ -34,5 +34,5 @@ def unauthorized():
 
 @app_views.route('/forbidden', strict_slashes=False)
 def forbidden():
-    "View method for accessing a resource to which the user has no access rights."
+    "View method for accessing a forbidden resource for a user"
     abort(403)
