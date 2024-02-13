@@ -4,6 +4,7 @@ from flask import request
 from typing import List, TypeVar
 # from models.user import User
 
+
 class Auth:
     """Auth class"""
     def require_auth(self, path: str,
