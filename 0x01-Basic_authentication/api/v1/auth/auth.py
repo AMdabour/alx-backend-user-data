@@ -22,7 +22,9 @@ class Auth:
 
     def authorization_header(self, request=None) -> str:
         """auth header"""
-        return None
+        if request is None or request.headers.get('Authorization') is None:
+            return None
+        return request.headers.get('Authorization')
 
     User = TypeVar('User')
 
