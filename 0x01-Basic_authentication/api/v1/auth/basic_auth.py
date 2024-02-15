@@ -4,8 +4,9 @@ from api.v1.auth.auth import Auth
 import base64
 import binascii
 from typing import Tuple, TypeVar
-from models import user
-User = TypeVar('User')
+# from models import user
+# User = TypeVar('User')
+from models.user import User
 
 
 class BasicAuth(Auth):
@@ -43,17 +44,34 @@ class BasicAuth(Auth):
             return (None, None)
         return tuple(decoded.split(':', 1))
 
-    def user_object_from_credentials(self,
-                                     user_email: str, user_pwd:
-                                     str) -> user:
-        """returns user object for credentials if present"""
-        if user_email is None or type(user_email) is not str or \
-                user_pwd is None or type(user_pwd) is not str:
-            return None
-        # check if user exists
-        result = user.User.search({'email': user_email})
-        if result:
-            for u in result:
-                if u.is_valid_password(user_pwd):
-                    return u
+    # def user_object_from_credentials(self,
+    #                                  user_email: str, user_pwd:
+    #                                  str) -> user:
+    #     """returns user object for credentials if present"""
+    #     if user_email is None or type(user_email) is not str or \
+    #             user_pwd is None or type(user_pwd) is not str:
+    #         return None
+    #     # check if user exists
+    #     result = user.User.search({'email': user_email})
+    #     if result:
+    #         for u in result:
+    #             if u.is_valid_password(user_pwd):
+    #                 return u
+    #     return None
+
+    def user_object_from_credentials(
+            self,
+            user_email: str,
+            user_pwd: str) -> TypeVar('User'):
+        """Retrieves a user based on the user's authentication credentials.
+        """
+        if type(user_email) == str and type(user_pwd) == str:
+            try:
+                users = User.search({'email': user_email})
+            except Exception:
+                return None
+            if len(users) <= 0:
+                return None
+            if users[0].is_valid_password(user_pwd):
+                return users[0]
         return None
