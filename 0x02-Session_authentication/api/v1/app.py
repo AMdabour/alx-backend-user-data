@@ -28,6 +28,7 @@ def before_request():
         return
     exc_pths = ['/api/v1/status/', '/api/v1/unauthorized/',
                 '/api/v1/forbidden/']
+    request.current_user = auth.current_user(request)
     if auth.require_auth(request.path, exc_pths) is False:
         return
     if auth.authorization_header(request) is None:
