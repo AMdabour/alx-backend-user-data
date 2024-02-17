@@ -2,6 +2,8 @@
 """session authentication with sessionAuth class"""
 from .auth import Auth
 from uuid import uuid4
+from os import getenv
+from models.user import User
 
 
 class SessionAuth(Auth):
@@ -22,3 +24,13 @@ class SessionAuth(Auth):
         if session_id and type(session_id) is str:
             return self.user_id_by_session_id.get(session_id, None)
         return None
+
+    def current_user(self, request=None):
+        """Get the currently logged in user from
+        the request object's session_id"""
+        try:
+            session_id = request.cookies.get(getenv('SESSION_NAME'), None)
+            user_id = self.user_id_for_session_id(session_id)
+            return User.get(user_id)
+        except Exception:
+            return None
