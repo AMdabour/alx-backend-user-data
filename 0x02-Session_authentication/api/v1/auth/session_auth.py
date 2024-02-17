@@ -16,3 +16,9 @@ class SessionAuth(Auth):
         session_id = str(uuid4())  # Create a random UUID
         self.user_id_by_session_id[session_id] = user_id
         return session_id
+
+    def user_id_for_session_id(self, session_id: str = None) -> str:
+        """Returns the user_id associated with this session_id"""
+        if session_id and type(session_id) is str:
+            return self.user_id_by_session_id.get(session_id, None)
+        return None
