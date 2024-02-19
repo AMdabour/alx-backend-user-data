@@ -9,10 +9,8 @@ class SessionExpAuth(SessionAuth):
     """expiration"""
     def __init__(self) -> None:
         try:
-            value = getenv('SESSION_DURATION')
-            if value:
-                self.session_duration = int(value)
-        except (ValueError, TypeError):
+            self.session_duration = int(getenv('SESSION_DURATION', '0'))
+        except Exception:
             self.session_duration = 0
 
     def create_session(self, user_id=None):
@@ -24,19 +22,19 @@ class SessionExpAuth(SessionAuth):
             'user_id': user_id,
             'created_at': datetime.now()
         }
-        super().user_id_by_session_id[session_id] = session_dict
+        self.user_id_by_session_id[session_id] = session_dict
         return session_id
 
     def user_id_for_session_id(self, session_id=None):
         """search for user_id by session_id"""
-        if session_id and super().user_id_by_session_id[session_id]:
+        if session_id and self.user_id_by_session_id[session_id]:
             if self.session_duration <= 0:
-                return super().user_id_by_session_id[session_id]['user_id']
-            date = super().user_id_by_session_id[session_id]['created_at']
+                return self.user_id_by_session_id[session_id]['user_id']
+            date = self.user_id_by_session_id[session_id]['created_at']
             duration = timedelta(seconds=self.session_duration)
             if date:
-                if date + duration >= datetime.now():
-                    return super().user_id_by_session_id[session_id]['user_id']
+                if date + duration > datetime.now():
+                    return self.user_id_by_session_id[session_id]['user_id']
                 return None
             return None
         return None
