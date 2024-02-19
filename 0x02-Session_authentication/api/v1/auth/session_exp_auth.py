@@ -27,15 +27,27 @@ class SessionExpAuth(SessionAuth):
 
     def user_id_for_session_id(self, session_id=None):
         """search for user_id by session_id"""
-        if session_id and self.user_id_by_session_id[session_id]:
+        # if session_id and self.user_id_by_session_id[session_id]:
+        #     if self.session_duration <= 0:
+        #         return self.user_id_by_session_id[session_id]['user_id']
+        #     date = self.user_id_by_session_id[session_id]['created_at']
+        #     duration = timedelta(seconds=self.session_duration)
+        #     current_time = datetime.now()
+        #     if date:
+        #         if date + duration > current_time:
+        #             return self.user_id_by_session_id[session_id]['user_id']
+        #         return None
+        #     return None
+        # return None
+        if session_id in self.user_id_by_session_id:
+            session_dict = self.user_id_by_session_id[session_id]
             if self.session_duration <= 0:
-                return self.user_id_by_session_id[session_id]['user_id']
-            date = self.user_id_by_session_id[session_id]['created_at']
-            duration = timedelta(seconds=self.session_duration)
-            current_time = datetime.now()
-            if date:
-                if date + duration > current_time:
-                    return self.user_id_by_session_id[session_id]['user_id']
+                return session_dict['user_id']
+            if 'created_at' not in session_dict:
                 return None
-            return None
-        return None
+            cur_time = datetime.now()
+            time_span = timedelta(seconds=self.session_duration)
+            exp_time = session_dict['created_at'] + time_span
+            if exp_time < cur_time:
+                return None
+            return session_dict['user_id']
